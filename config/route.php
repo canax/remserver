@@ -8,7 +8,7 @@ return [
     "routeFiles" => [
         [
             // Routes for the REM server
-            "mount" => null,
+            "mount" => "api",
             "file" => __DIR__ . "/route/remserver.php",
         ],
     ],
