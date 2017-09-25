@@ -43,7 +43,7 @@ rsync -av vendor/anax/remserver/config/remserver* config
 rsync -av vendor/anax/remserver/content/index.md content/remserver.md
 ```
 
-THe API documentation is now available through the route `remserver`.
+The API documentation is now available through the route `remserver`.
 
 
 
