@@ -173,4 +173,4 @@ There are more servers doing the same thing.
 Source {#source}
 -------------------------------------------
 
-The source is on GitHub in [dbwebb-se/rem-server](https://github.com/dbwebb-se/rem-server).
+The source is on GitHub in [anax/rem-server](https://github.com/anax/remserver).
