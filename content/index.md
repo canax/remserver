@@ -173,4 +173,4 @@ There are more servers doing the same thing.
 Source {#source}
 -------------------------------------------
 
-The source is on GitHub in [anax/remserver](https://github.com/anax/remserver).
+The source is on GitHub in [canax/remserver](https://github.com/canax/remserver).
