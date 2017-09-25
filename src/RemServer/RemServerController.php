@@ -26,8 +26,6 @@ class RemServerController implements InjectionAwareInterface
         $session = $this->di->get("session");
         $rem     = $this->di->get("rem");
 
-        $session->start();
-
         if (!$rem->hasDataset()) {
             $rem->init();
         }
