@@ -53,13 +53,13 @@ The API documentation is now available through the route `remserver`.
 rsync -av vendor/anax/remserver/config/route/remserver.php config/route
 ```
 
-You need to include the router file in your router configuration `config/route.php`. There is a sample you can use in `venor/anax/remserver/config/route.php`.
+You need to include the router file in your router configuration `config/route.php`. There is a sample you can use in `vendor/anax/remserver/config/route.php`.
 
 
 
 ### DI services
 
-You need to add the services di configuration `config/di.php`. There is a sample you can use in `venor/anax/remserver/config/di.php`.
+You need to add the services di configuration `config/di.php`. There is a sample you can use in `vendor/anax/remserver/config/di.php`.
 
 
 
