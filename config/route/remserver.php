@@ -5,7 +5,7 @@
 return [
     "routes" => [
         [
-            "info" => "Start the session and initiate the REM Server.",
+            "info" => "Initiate the REM Server.",
             "requestMethod" => null,
             "path" => "**",
             "callable" => ["remController", "anyPrepare"]
