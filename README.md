@@ -8,7 +8,7 @@ Anax remserver
 [![Build Status](https://scrutinizer-ci.com/g/canax/remserver/badges/build.png?b=master)](https://scrutinizer-ci.com/g/canax/remserver/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/canax/remserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/canax/remserver/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/canax/remserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/canax/remserver/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/d831fd4c-b7c6-4ff0-9a83-102440af8929/mini.png)](https://insight.sensiolabs.com/projects/d831fd4c-b7c6-4ff0-9a83-102440af8929)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/067df5c1-e2f6-4f2e-b479-79cfe511ae7c/mini.png)](https://insight.sensiolabs.com/projects/067df5c1-e2f6-4f2e-b479-79cfe511ae7c)
 
 Anax remserver module implementing a REM server.
 
