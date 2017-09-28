@@ -4,6 +4,7 @@ Revision history
 v1.0.3* (2017-09-28)
 ---------------------------------
 
+* Fix code quality according to scrutinizer.
 * Rewrite duplicate code in RemServer.
 * Fix testcase using session as array.
 * Enhance makefile to read proper exit status from piped command.

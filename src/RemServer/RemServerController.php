@@ -17,13 +17,13 @@ class RemServerController implements InjectionAwareInterface
 
 
     /**
-     * Initiate the REM Server, the session must be started.
+     * Initiate the REM Server.
      *
      * @return void
      */
     public function anyPrepare()
     {
-        $rem     = $this->di->get("rem");
+        $rem = $this->di->get("rem");
 
         if (!$rem->hasDataset()) {
             $rem->init();
@@ -47,7 +47,7 @@ class RemServerController implements InjectionAwareInterface
 
 
     /**
-     * Destroy the session.
+     * Destroy the session to ease testing.
      *
      * @return void
      */

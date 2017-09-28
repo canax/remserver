@@ -164,9 +164,9 @@ class RemServer implements ConfigureInterface
     /**
      * Upsert/replace an item to a dataset.
      *
-     * @param string $key    for the dataset
-     * @param string $itemId where to store it
-     * @param string $entry  to add
+     * @param string $keyDataset for the dataset
+     * @param string $itemId     where to store it
+     * @param string $entry      to add
      *
      * @return array as item upserted
      */
@@ -198,8 +198,8 @@ class RemServer implements ConfigureInterface
     /**
      * Delete an item from the dataset.
      *
-     * @param string $key    for the dataset
-     * @param string $itemId to delete
+     * @param string $keyDataset for the dataset
+     * @param string $itemId     to delete
      *
      * @return void
      */
