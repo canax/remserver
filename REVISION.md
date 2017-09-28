@@ -16,7 +16,7 @@ v1.0.3* (2017-09-28)
 v1.0.2 (2017-09-27)
 ---------------------------------
 
-* Integrate with travis, circleci, scrutinizer and sensionlabsinsight.
+* Integrate with travis, circleci, scrutinizer and sensiolabsinsight.
 
 
 v1.0.1 (2017-09-26)
