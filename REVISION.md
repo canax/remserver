@@ -4,6 +4,7 @@ Revision history
 v1.0.3* (2017-09-28)
 ---------------------------------
 
+* Add badge and configuration for CodeClimate.
 * Fix code quality according to scrutinizer.
 * Rewrite duplicate code in RemServer.
 * Fix testcase using session as array.

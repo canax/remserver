@@ -12,7 +12,9 @@ Anax remserver
 [![Code Coverage](https://scrutinizer-ci.com/g/canax/remserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/canax/remserver/?branch=master)
 
 [![Code Climate](https://codeclimate.com/github/canax/remserver/badges/gpa.svg)](https://codeclimate.com/github/canax/remserver)
+<!--
 [![Test Coverage](https://codeclimate.com/github/canax/remserver/badges/coverage.svg)](https://codeclimate.com/github/canax/remserver/coverage)
+-->
 [![Issue Count](https://codeclimate.com/github/canax/remserver/badges/issue_count.svg)](https://codeclimate.com/github/canax/remserver)
 
 Anax remserver module implementing a REM server.
