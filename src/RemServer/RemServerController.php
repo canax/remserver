@@ -121,11 +121,9 @@ class RemServerController implements InjectionAwareInterface
      */
     public function postItem($key)
     {
-        $entry = $this->di->get("request")->getBody();
-        $entry = json_decode($entry, true);
-
+        $entry = $this->getRequestBody();
         $item = $this->di->get("rem")->addItem($key, $entry);
-        $this->id->get("response")->sendJson($item);
+        $this->di->get("response")->sendJson($item);
         exit;
     }
 
@@ -140,9 +138,7 @@ class RemServerController implements InjectionAwareInterface
      */
     public function putItem($key, $itemId)
     {
-        $entry = $this->di->get("request")->getBody();
-        $entry = json_decode($entry, true);
-
+        $entry = $this->getRequestBody();
         $item = $this->di->get("rem")->upsertItem($key, $itemId, $entry);
         $this->di->get("response")->sendJson($item);
         exit;
@@ -176,5 +172,24 @@ class RemServerController implements InjectionAwareInterface
     {
         $this->di->get("response")->sendJson(["message" => "404. The api/ does not support that."], 404);
         exit;
+    }
+
+
+
+    /**
+     * Get the request body from the HTTP request and treat it as
+     * JSON data.
+     *
+     * @return mixed as the JSON converted content.
+     */
+    protected function getRequestBody()
+    {
+        $entry = $this->di->get("request")->getBody();
+        $entry = json_decode($entry, true);
+
+        if (is_null($entry)) {
+            $this->di->get("response")->sendJson(["message" => "500. Could not read HTTP request body as JSON."], 500);
+            exit;
+        }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Anax\RemServer;
 
+use \Anax\Session\Session;
+
 /**
  * Test for RemServer.
  */
@@ -35,8 +37,9 @@ class RemServerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInjectSession()
     {
-        $rem = new RemServer();
-        $obj = $rem->injectSession([]);
+        $rem     = new RemServer();
+        $session = new Session(["name" => "test"]);
+        $obj = $rem->injectSession($session);
         $this->assertEquals($rem, $obj);
     }
 }
