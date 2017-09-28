@@ -204,7 +204,7 @@ phpunit: prepare
 .PHONY: phpcs
 phpcs: prepare
 	@$(call HELPTEXT,$@)
-	[ ! -f .phpcs.xml ] || $(PHPCS) --standard=.phpcs.xml | tee build/phpcs
+	- [ ! -f .phpcs.xml ] || $(PHPCS) --standard=.phpcs.xml | tee build/phpcs; exit "$${PIPESTATUS[0]}"
 
 
 
@@ -224,7 +224,7 @@ endif
 .PHONY: phpmd
 phpmd: prepare
 	@$(call HELPTEXT,$@)
-	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
+	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd; exit "$${PIPESTATUS[0]}"
 
 
 
@@ -233,7 +233,7 @@ phpmd: prepare
 phpcpd: prepare
 	@$(call HELPTEXT,$@)
 	@ #- [ ! -f .phpcpd.xml ] || $(PHPCPD) . text .phpcpd.xml | tee build/phpcpd
-	- [ ! -d src ] || $(PHPCPD) --fuzzy --min-lines=3 --min-tokens=20 src | tee build/phpcpd
+	- [ ! -d src ] || $(PHPCPD) --fuzzy --min-lines=3 --min-tokens=20 src | tee build/phpcpd; exit "$${PIPESTATUS[0]}"
 
 
 

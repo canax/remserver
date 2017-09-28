@@ -4,6 +4,7 @@ Revision history
 v1.0.3* (2017-09-28)
 ---------------------------------
 
+* Enhance makefile to read proper exit status from piped command.
 * Enhance ruleset for phpmd.
 * Add phpcpd to makefile and testsuite.
 
