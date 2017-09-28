@@ -41,6 +41,7 @@ PHPLOC 	:= $(BIN)/phploc
 PHPCS   := $(BIN)/phpcs
 PHPCBF  := $(BIN)/phpcbf
 PHPMD   := $(BIN)/phpmd
+PHPCPD  := $(BIN)/phpcpd
 PHPDOC  := $(BIN)/phpdoc
 BEHAT   := $(BIN)/behat
 SHELLCHECK := $(BIN)/shellcheck
@@ -102,7 +103,7 @@ check: check-tools-bash check-tools-php
 
 # target: test               - Run all tests.
 .PHONY:  test
-test: phpunit phpcs phpmd phploc behat shellcheck bats
+test: phpunit phpcs phpmd phpcpd phploc behat shellcheck bats
 	@$(call HELPTEXT,$@)
 	composer validate
 
@@ -163,6 +164,8 @@ install-tools-php:
 
 	curl -Lso $(PHPMD) http://static.phpmd.org/php/latest/phpmd.phar && chmod 755 $(PHPMD)
 
+	curl -Lso $(PHPCPD) https://phar.phpunit.de/phpcpd.phar && chmod 755 $(PHPCPD)
+
 	curl -Lso $(PHPLOC) https://phar.phpunit.de/phploc.phar && chmod 755 $(PHPLOC)
 
 	curl -Lso $(BEHAT) https://github.com/Behat/Behat/releases/download/v3.3.0/behat.phar && chmod 755 $(BEHAT)
@@ -181,8 +184,9 @@ check-tools-php:
 	which $(PHPUNIT) && $(PHPUNIT) --version
 	which $(PHPLOC) && $(PHPLOC) --version
 	which $(PHPCS) && $(PHPCS) --version && echo
-	which $(PHPMD) && $(PHPMD) --version && echo
 	which $(PHPCBF) && $(PHPCBF) --version && echo
+	which $(PHPMD) && $(PHPMD) --version && echo
+	which $(PHPCPD) && $(PHPCPD) --version && echo
 	which $(PHPDOC) && $(PHPDOC) --version && echo
 	which $(BEHAT) && $(BEHAT) --version && echo
 
@@ -221,6 +225,15 @@ endif
 phpmd: prepare
 	@$(call HELPTEXT,$@)
 	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
+
+
+
+# target: phpcpd             - Copy paste detector for PHP.
+.PHONY: phpcpd
+phpcpd: prepare
+	@$(call HELPTEXT,$@)
+	@ #- [ ! -f .phpcpd.xml ] || $(PHPCPD) . text .phpcpd.xml | tee build/phpcpd
+	- [ ! -d src ] || $(PHPCPD) --fuzzy --min-lines=3 --min-tokens=20 src | tee build/phpcpd
 
 
 
