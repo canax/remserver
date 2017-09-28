@@ -31,7 +31,7 @@ class RemServer implements ConfigureInterface
     /**
      * Inject dependency to $session..
      *
-     * @param array $session object representing session.
+     * @param object $session object representing session.
      *
      * @return self
      */
