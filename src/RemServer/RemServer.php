@@ -15,7 +15,7 @@ class RemServer implements ConfigureInterface
 
 
     /**
-     * @var array $session inject a reference to the session.
+     * @var object $session inject a reference to the session.
      */
     private $session;
 
@@ -67,7 +67,7 @@ class RemServer implements ConfigureInterface
     /**
      * Check if there is a dataset stored.
      *
-     * @return boolean tru if dataset exists in session, else false
+     * @return boolean true if dataset exists in session, else false
      */
     public function hasDataset()
     {
@@ -98,7 +98,7 @@ class RemServer implements ConfigureInterface
      * Save (the modified) dataset.
      *
      * @param string $key     for data subset.
-     * @param string $dataset the data to save.
+     * @param array  $dataset the data to save.
      *
      * @return self
      */
