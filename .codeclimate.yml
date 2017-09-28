@@ -1,21 +1,24 @@
 engines:
-  phpmd:
-    enabled: true
-    config:
-      file_extensions: "php"
-      #rulesets: ".phpmd.xml"
+    phpmd:
+        enabled: true
+        config:
+            file_extensions: "php"
 
-  phpcodesniffer:
-    enabled: true
-    config:
-      file_extensions: "php"
+    phpcodesniffer:
+        enabled: true
+        config:
+            file_extensions: "php"
 
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - php:
+    duplication:
+        enabled: true
+        config:
+            languages:
+                - php:
 
 ratings:
-  paths:
-  - "src/**.php"
+    paths:
+        - "src/**.php"
+
+exclude_paths:
+    - "test/**"
+    - "vendor/**"
