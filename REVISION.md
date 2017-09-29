@@ -4,6 +4,7 @@ Revision history
 v1.0.3* (2017-09-28)
 ---------------------------------
 
+* Adding scripts to ease test and development.
 * Add badge and configuration for CodeClimate.
 * Fix code quality according to scrutinizer.
 * Rewrite duplicate code in RemServer.
