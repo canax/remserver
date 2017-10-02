@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
-# Setup a test environment for the module.
+# Setup a test environment for the module, this script is to be
+# called from the makefile using `make bild-anax` which installs
+# a development version av anax in build/anax using this module.
 #
 
 #
@@ -18,7 +20,6 @@ function error_exit {
     error_exit "Missing file 'Makefile', are you really executing this script from the root of the repo?"
 
 # Prepare directory structure where to place installation
-make prepare
 cd build || \
     error_exit "Missing directory 'build'"
 
@@ -28,9 +29,7 @@ cd anax || \
     error_exit "Dir for anax installation was not created."
 
 composer require anax/remserver
-pwd
-ls
-#vendor/anax/remserver/script/installDefault.bash
+vendor/anax/remserver/script/post-composer-require.bash
 
-echo "The testinstallation is in build/anax."
+echo "The installation is in build/anax."
 echo "Point your browser to build/anax/htdocs."

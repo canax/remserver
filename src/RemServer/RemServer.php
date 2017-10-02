@@ -4,6 +4,7 @@ namespace Anax\RemServer;
 
 use \Anax\Configure\ConfigureInterface;
 use \Anax\Configure\ConfigureTrait;
+use \Anax\Session\SessionInterface;
 
 /**
  * REM Server.
@@ -17,7 +18,7 @@ class RemServer implements ConfigureInterface
     /**
      * @var object $session inject a reference to the session.
      */
-    private $session;
+    protected $session;
 
 
 
@@ -29,13 +30,13 @@ class RemServer implements ConfigureInterface
 
 
     /**
-     * Inject dependency to $session..
+     * Inject dependency to $session.
      *
-     * @param object $session object representing session.
+     * @param SessionInterface $session object representing session.
      *
      * @return self
      */
-    public function injectSession($session)
+    public function injectSession(SessionInterface $session)
     {
         $this->session = $session;
         return $this;
@@ -46,10 +47,16 @@ class RemServer implements ConfigureInterface
     /**
      * Fill the session with default data that are read from files.
      *
+     * @throws Exception when bad configuration.
+     *
      * @return self
      */
     public function init()
     {
+        if (!isset($this->config["dataset"])) {
+            throw new Exception("Configuration missing dataset to load.");
+        }
+
         $files = $this->config["dataset"];
         $dataset = [];
         foreach ($files as $file) {

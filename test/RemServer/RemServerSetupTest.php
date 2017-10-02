@@ -21,7 +21,7 @@ class RemServerTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Check that the configuration can be set.
+     * Check that the configuration can be set and returns instance.
      */
     public function testConfigure()
     {
@@ -40,6 +40,24 @@ class RemServerTest extends \PHPUnit_Framework_TestCase
         $rem     = new RemServer();
         $session = new Session(["name" => "test"]);
         $obj = $rem->injectSession($session);
+        $this->assertEquals($rem, $obj);
+    }
+
+
+
+    /**
+     * Init the REM server.
+     */
+    public function testInit()
+    {
+        $rem     = new RemServer();
+        $session = new Session(["name" => "test"]);
+        $this->rem = $rem;
+
+        $obj = $rem->configure("remserver.php")
+                   ->injectSession($session)
+                   ->init();
+
         $this->assertEquals($rem, $obj);
     }
 }

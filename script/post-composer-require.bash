@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Install REM Server into an Anax installation.
+# Install REM Server into an Anax installation using a default setup.
 #
 install -d config/di config/route
 rsync -av vendor/anax/remserver/config/remserver* config

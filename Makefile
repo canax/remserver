@@ -149,6 +149,19 @@ tag-prepare:
 
 # ------------------------------------------------------------------------
 #
+# Local utilities
+#
+
+# target: build-dev-anax     - Create dev installation of anax in build/anax.
+.PHONY: build-dev-anax
+build-dev-anax: prepare
+	@$(call HELPTEXT,$@)
+	[ ! -f script/build-dev-anax.bash ] || script/build-dev-anax.bash
+
+
+
+# ------------------------------------------------------------------------
+#
 # PHP
 #
 
