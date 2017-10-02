@@ -33,5 +33,8 @@
         "anax/textfilter": "^1.0",
         "anax/url": "^1.0",
         "anax/view": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
     }
 }
