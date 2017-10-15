@@ -1,6 +1,13 @@
 Revision history
 =================================
 
+v1.0.4 (2017-10-15)
+---------------------------------
+
+* Add phpunit/phpunit to composer.json dev for Scrutinizer.
+* Make 100% unit tests.
+
+
 v1.0.3 (2017-10-02)
 ---------------------------------
 

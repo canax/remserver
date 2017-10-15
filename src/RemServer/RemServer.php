@@ -145,7 +145,7 @@ class RemServer implements ConfigureInterface
      * Add an item to a dataset.
      *
      * @param string $key  for the dataset
-     * @param string $item to add
+     * @param array  $item to add
      *
      * @return array as new item inserted
      */

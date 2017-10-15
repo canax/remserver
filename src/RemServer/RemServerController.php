@@ -7,8 +7,6 @@ use \Anax\DI\InjectionAwareTrait;
 
 /**
  * A controller for the REM Server.
- *
- * @SuppressWarnings(PHPMD.ExitExpression)
  */
 class RemServerController implements InjectionAwareInterface
 {
@@ -35,13 +33,14 @@ class RemServerController implements InjectionAwareInterface
     /**
      * Init or re-init the REM Server.
      *
-     * @return void
+     * @return Response
      */
     public function anyInit()
     {
         $this->di->get("rem")->init();
-        $this->di->get("response")->sendJson(["message" => "The session is initiated with the default dataset."]);
-        exit;
+        return $this->di->get("response")->sendJson(
+            ["message" => "The session is initiated with the default dataset."]
+        );
     }
 
 
@@ -49,13 +48,14 @@ class RemServerController implements InjectionAwareInterface
     /**
      * Destroy the session to ease testing.
      *
-     * @return void
+     * @return Response
      */
     public function anyDestroy()
     {
         $this->di->get("session")->destroy();
-        $this->di->get("response")->sendJson(["message" => "The session was destroyed."]);
-        exit;
+        return $this->di->get("response")->sendJson(
+            ["message" => "The session was destroyed."]
+        );
     }
 
 
@@ -65,7 +65,7 @@ class RemServerController implements InjectionAwareInterface
      *
      * @param string $key for the dataset
      *
-     * @return void
+     * @return Response
      */
     public function getDataset($key)
     {
@@ -81,8 +81,7 @@ class RemServerController implements InjectionAwareInterface
             "total" => count($dataset)
         ];
 
-        $this->di->get("response")->sendJson($res);
-        exit;
+        return $this->di->get("response")->sendJson($res);
     }
 
 
@@ -93,7 +92,7 @@ class RemServerController implements InjectionAwareInterface
      * @param string $key    for the dataset
      * @param string $itemId for the item to get
      *
-     * @return void
+     * @return Response
      */
     public function getItem($key, $itemId)
     {
@@ -101,12 +100,10 @@ class RemServerController implements InjectionAwareInterface
 
         $item = $this->di->get("rem")->getItem($key, $itemId);
         if (!$item) {
-            $response->sendJson(["message" => "The item is not found."]);
-            exit;
+            return $response->sendJson(["message" => "The item is not found."]);
         }
 
-        $response->sendJson($item);
-        exit;
+        return $response->sendJson($item);
     }
 
 
@@ -115,16 +112,23 @@ class RemServerController implements InjectionAwareInterface
      * Create a new item by getting the entry from the request body and add
      * to the dataset.
      *
-     * @param string $key    for the dataset
+     * @param string $key for the dataset
      *
-     * @return void
+     * @return Response
      */
     public function postItem($key)
     {
-        $entry = $this->getRequestBody();
-        $item = $this->di->get("rem")->addItem($key, $entry);
-        $this->di->get("response")->sendJson($item);
-        exit;
+        try {
+            $entry = $this->getRequestBody();
+            $item = $this->di->get("rem")->addItem($key, $entry);
+        } catch (Exception $e) {
+            return $this->di->get("response")->sendJson(
+                ["message" => "500. HTTP request body is not an object/array or valid JSON."],
+                500
+            );
+        }
+
+        return $this->di->get("response")->sendJson($item);
     }
 
 
@@ -138,10 +142,17 @@ class RemServerController implements InjectionAwareInterface
      */
     public function putItem($key, $itemId)
     {
-        $entry = $this->getRequestBody();
-        $item = $this->di->get("rem")->upsertItem($key, $itemId, $entry);
-        $this->di->get("response")->sendJson($item);
-        exit;
+        try {
+            $entry = $this->getRequestBody();
+            $item = $this->di->get("rem")->upsertItem($key, $itemId, $entry);
+        } catch (Exception $e) {
+            return $this->di->get("response")->sendJson(
+                ["message" => "500. HTTP request body is not an object/array or valid JSON."],
+                500
+            );
+        }
+
+        return $this->di->get("response")->sendJson($item);
     }
 
 
@@ -157,8 +168,7 @@ class RemServerController implements InjectionAwareInterface
     public function deleteItem($key, $itemId)
     {
         $this->di->get("rem")->deleteItem($key, $itemId);
-        $this->di->get("response")->sendJson(null);
-        exit;
+        return $this->di->get("response")->sendJson(null);
     }
 
 
@@ -170,8 +180,10 @@ class RemServerController implements InjectionAwareInterface
      */
     public function anyUnsupported()
     {
-        $this->di->get("response")->sendJson(["message" => "404. The api/ does not support that."], 404);
-        exit;
+        return $this->di->get("response")->sendJson(
+            ["message" => "404. The api/ does not support that."],
+            404
+        );
     }
 
 
@@ -179,6 +191,8 @@ class RemServerController implements InjectionAwareInterface
     /**
      * Get the request body from the HTTP request and treat it as
      * JSON data.
+     *
+     * @throws Exception when request body is invalid JSON.
      *
      * @return mixed as the JSON converted content.
      */
@@ -188,8 +202,9 @@ class RemServerController implements InjectionAwareInterface
         $entry = json_decode($entry, true);
 
         if (is_null($entry)) {
-            $this->di->get("response")->sendJson(["message" => "500. Could not read HTTP request body as JSON."], 500);
-            exit;
+            throw new Exception("Could not read HTTP request body as JSON.");
         }
+
+        return $entry;
     }
 }
