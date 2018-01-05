@@ -14,18 +14,38 @@ Anax remserver
 [![Code Climate](https://codeclimate.com/github/canax/remserver/badges/gpa.svg)](https://codeclimate.com/github/canax/remserver)
 [![Issue Count](https://codeclimate.com/github/canax/remserver/badges/issue_count.svg)](https://codeclimate.com/github/canax/remserver)
 
-Anax remserver module implementing a REM server.
+Anax remserver module implementing a REM server. Use this module togheter with an Anax installation to attach a REM server, useful for prototyping.
 
 
 
-Install
-------------------
+Install and setup Anax 
+------------------------------------
+
+Proceed to the next section if you already have an installation of Anax.
+
+You need a Anax installation, before you can use this module. You can create a sample Anax installation like this, using the scaffolding utility [`anax-cli`](https://github.com/canax/anax-cli).
+
+Scaffold a sample Anax installation `anax-site-develop` into directory `rem`.
+
+```
+$ anax create rem anax-site-develop
+$ cd rem
+```
+
+Point your webserver to `rem/htdocs` and Anax should display a Home-page.
+
+
+
+Install REM server as part of Anax
+------------------------------------
 
 Install using composer and then integrate the module with your Anax installation.
 
 
 
 ### Install with composer
+
+We install the REM server as a module from Packagist.
 
 ```
 composer require anax/remserver
@@ -35,6 +55,8 @@ composer require anax/remserver
 
 ### Configuration files for REM server
 
+We need to copy the configuration files for the REM server.
+
 ```
 rsync -av vendor/anax/remserver/config/remserver* config
 ```
@@ -42,6 +64,8 @@ rsync -av vendor/anax/remserver/config/remserver* config
 
 
 ### API documentation
+
+We copy the API documentation for the REM server.
 
 ```
 rsync -av vendor/anax/remserver/content/index.md content/remserver.md
@@ -63,12 +87,12 @@ You need to include the router file in your router configuration `config/route.p
 
 ### DI services
 
-You need to add the services di configuration `config/di.php`. There is a sample you can use in `vendor/anax/remserver/config/di.php`.
+You need to add the configuration for the di services `config/di.php`. There is a sample you can use in `vendor/anax/remserver/config/di.php`.
 
 
 
 License
-------------------
+------------------------------------
 
 This software carries a MIT license.
 
@@ -76,5 +100,5 @@ This software carries a MIT license.
 
 ```
  .  
-..:  Copyright (c) 2017 Mikael Roos (mos@dbwebb.se)
+..:  Copyright (c) 2017 - 2018 Mikael Roos (mos@dbwebb.se)
 ```
