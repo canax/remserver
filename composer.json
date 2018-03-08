@@ -22,7 +22,7 @@
         }
     },
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.0",
         "anax/configure": "^1.0",
         "anax/di": "^1.0",
         "anax/page": "^1.0",
@@ -33,8 +33,5 @@
         "anax/textfilter": "^1.0",
         "anax/url": "^1.0",
         "anax/view": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5.7"
     }
 }
