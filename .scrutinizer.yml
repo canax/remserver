@@ -10,6 +10,8 @@ build:
         before:
             -
                 command: "mkdir build"
+        after:
+            - "composer require --dev phpunit/phpunit"
 
     tests:
         override:

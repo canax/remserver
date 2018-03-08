@@ -11,6 +11,7 @@ v1.1.* (2018-03-08)
 * Update Makefile with Docker and flexible install av PHPUnit.
 * Move PHPUnit test to PHP 7.0 and above.
 * Add docker support through docker-compose.yaml.
+* Fix Scrutinizer to install phpunit.
 
 
 v1.0.5 (2018-03-08)
