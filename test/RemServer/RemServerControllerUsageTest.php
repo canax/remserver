@@ -7,18 +7,27 @@ use \Anax\DI\DIFactoryTest;
 /**
  * Test for RemServerController.
  */
-class RemServerControllerUsageTest extends \PHPUnit_Framework_TestCase
+class RemServerControllerUsageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Setup before each testcase
      */
-    public function setUp()
+    protected function setUp()
     {
         $this->di = new DIFactoryTest();
         $this->di->configure("di.php");
-        $this->controller = new RemServerController();
-        $this->controller->setDI($this->di);
+        $this->controller = $this->di->get("remController");
         $this->rem = $this->di->get("rem");
+    }
+
+
+
+    /**
+     * Tear down after each testcase
+     */
+    protected function tearDown()
+    {
+        $this->di->get("session")->destroy();
     }
 
 
@@ -28,9 +37,6 @@ class RemServerControllerUsageTest extends \PHPUnit_Framework_TestCase
      */
     public function testAnyPrepare()
     {
-        $res = $this->rem->hasDataset();
-        $this->assertFalse($res);
-
         $this->controller->anyPrepare();
         $res = $this->rem->hasDataset();
         $this->assertTrue($res);

@@ -7,7 +7,7 @@ use \Anax\DI\DIFactoryTest;
 /**
  * Test for RemServerController.
  */
-class RemServerControllerSetupTest extends \PHPUnit_Framework_TestCase
+class RemServerControllerSetupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Setup before each testcase

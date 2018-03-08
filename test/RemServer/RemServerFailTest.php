@@ -7,7 +7,7 @@ use \Anax\Session\Session;
 /**
  * Test for RemServer.
  */
-class RemServerFailTest extends \PHPUnit_Framework_TestCase
+class RemServerFailTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Init the REM server without dataset throws exception.

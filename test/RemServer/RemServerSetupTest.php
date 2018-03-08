@@ -7,7 +7,7 @@ use \Anax\Session\Session;
 /**
  * Test for RemServer.
  */
-class RemServerTest extends \PHPUnit_Framework_TestCase
+class RemServerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Create an object.

@@ -2,6 +2,17 @@ Revision history
 =================================
 
 
+v1.1.* (2018-03-08)
+---------------------------------
+
+* Move to CircleCI 2.0.
+* Move Travis to PHP 7.0 an up.
+* Move composer.json to require PHP 7.0.
+* Update Makefile with Docker and flexible install av PHPUnit.
+* Move PHPUnit test to PHP 7.0 and above.
+* Add docker support through docker-compose.yaml.
+
+
 v1.0.5 (2018-03-08)
 ---------------------------------
 
