@@ -5,7 +5,7 @@ Revision history
 v1.0.* (2018-01-05)
 ---------------------------------
 
-* Add instructions to README on how to setup an Anax installation from schratch.
+* Add instructions to README on how to setup an Anax installation from scratch.
 
 
 v1.0.4 (2017-10-15)

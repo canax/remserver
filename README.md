@@ -14,7 +14,9 @@ Anax remserver
 [![Code Climate](https://codeclimate.com/github/canax/remserver/badges/gpa.svg)](https://codeclimate.com/github/canax/remserver)
 [![Issue Count](https://codeclimate.com/github/canax/remserver/badges/issue_count.svg)](https://codeclimate.com/github/canax/remserver)
 
-Anax remserver module implementing a REM server. Use this module togheter with an Anax installation to attach a REM server, useful for prototyping.
+Anax remserver module implementing a REM server. Use this module together with an Anax installation to enable a scaffolded REM server, useful for prototyping.
+
+This REM server can be used to try out HTTP methods for GET, PUT, POST and DELETE to use CRUD operations on predefined datasets. The modified data is stored in the session.
 
 
 
