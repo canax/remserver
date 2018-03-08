@@ -37,6 +37,13 @@ class RemServerControllerUsageTest extends \PHPUnit\Framework\TestCase
      */
     public function testAnyPrepare()
     {
+        ob_start();
+        $response = $this->controller->anyDestroy();
+        $this->assertContains("destroyed", $response->getBody());
+        ob_end_clean();
+        $res = $this->rem->hasDataset();
+        $this->assertFalse($res);
+
         $this->controller->anyPrepare();
         $res = $this->rem->hasDataset();
         $this->assertTrue($res);
