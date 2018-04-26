@@ -2,6 +2,12 @@ Revision history
 =================================
 
 
+v1.1.* (2018-04-26)
+---------------------------------
+
+* Add codacy badge.
+
+
 v1.1.0 (2018-03-08)
 ---------------------------------
 
@@ -14,10 +20,12 @@ v1.1.0 (2018-03-08)
 * Fix Scrutinizer to install phpunit.
 
 
+
 v1.0.5 (2018-03-08)
 ---------------------------------
 
 * Add instructions to README on how to setup an Anax installation from scratch.
+
 
 
 v1.0.4 (2017-10-15)
@@ -25,6 +33,7 @@ v1.0.4 (2017-10-15)
 
 * Add phpunit/phpunit to composer.json dev for Scrutinizer.
 * Make 100% unit tests.
+
 
 
 v1.0.3 (2017-10-02)
@@ -41,16 +50,19 @@ v1.0.3 (2017-10-02)
 * Add phpcpd to makefile and testsuite.
 
 
+
 v1.0.2 (2017-09-27)
 ---------------------------------
 
 * Integrate with travis, circleci, scrutinizer and sensiolabsinsight.
 
 
+
 v1.0.1 (2017-09-26)
 ---------------------------------
 
 * Add testcases for phpunit.
+
 
 
 v1.0.0 (2017-09-25)
