@@ -7,6 +7,10 @@ v2.0.* (2018-11-16)
 
 * Add codacy badge.
 * Removed Sensiolabs as validation tool.
+* Upgrade to PHP 7.2.
+* Use anax/anax-lite as base.
+* No need to setup remserver in $di.
+* 
 
 
 v1.1.0 (2018-03-08)
