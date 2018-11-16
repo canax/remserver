@@ -25,7 +25,10 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.2",
-        "anax/anax-lite": "^1.0.24",
-        "anax/textfilter": "^1.2.3",
+        "anax/commons": "^2.0.0@beta"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7",
+        "anax/anax-lite": "^1.0.24"
     }
 }
