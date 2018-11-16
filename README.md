@@ -13,7 +13,6 @@ Anax remserver
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/47f7756bad18e2afbd71/maintainability)](https://codeclimate.com/github/canax/remserver/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2ee155e2516f42f3b76533bc667b6d01)](https://www.codacy.com/app/mosbth/remserver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=canax/remserver&amp;utm_campaign=Badge_Grade)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/067df5c1-e2f6-4f2e-b479-79cfe511ae7c/mini.png)](https://insight.sensiolabs.com/projects/5c8cab98-b8f2-4cce-8003-a67c307282fd)
 
 Anax remserver module implementing a REM server. Use this module together with an Anax installation to enable a scaffolded REM server, useful for prototyping.
 

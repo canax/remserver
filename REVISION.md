@@ -2,10 +2,11 @@ Revision history
 =================================
 
 
-v1.1.* (2018-04-26)
+v2.0.* (2018-11-16)
 ---------------------------------
 
 * Add codacy badge.
+* Removed Sensiolabs as validation tool.
 
 
 v1.1.0 (2018-03-08)
