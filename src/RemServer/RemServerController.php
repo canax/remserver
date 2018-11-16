@@ -2,26 +2,27 @@
 
 namespace Anax\RemServer;
 
-use \Anax\DI\InjectionAwareInterface;
-use \Anax\DI\InjectionAwareTrait;
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Commons\ContainerInjectableTrait;
 
 /**
  * A controller for the REM Server.
  */
-class RemServerController implements InjectionAwareInterface
+class RemServerController implements ContainerInjectableInterface
 {
-    use InjectionAwareTrait;
+    use ContainerInjectableTrait;
 
 
 
     /**
-     * Initiate the REM Server.
+     * Initiate the REM server before each action, if it has not already
+     * some dataset(s).
      *
      * @return void
      */
-    public function anyPrepare()
+    public function initialize() : void
     {
-        $rem = $this->di->get("rem");
+        $rem = $this->di->get("remserver");
 
         if (!$rem->hasDataset()) {
             $rem->init();
@@ -33,55 +34,68 @@ class RemServerController implements InjectionAwareInterface
     /**
      * Init or re-init the REM Server.
      *
-     * @return Response
+     * @return array
      */
-    public function anyInit()
+    public function initActionGet() : array
     {
-        $this->di->get("rem")->init();
-        return $this->di->get("response")->sendJson(
-            ["message" => "The session is initiated with the default dataset."]
-        );
+        $rem = $this->di->get("remserver"); 
+        $rem->init();
+        $json = [
+            "message" => "The session is initiated with the default dataset(s).",
+            "dataset" => $rem->getDefaultDataset(),
+        ];
+        return [$json];
     }
 
 
 
     /**
-     * Destroy the session to ease testing.
+     * Get a dataset $key or parts of it by using the querystring.
      *
-     * @return Response
+     * @param array $args variadic argument containg all parts of the
+     *                    request.
+     *
+     * @return array
      */
-    public function anyDestroy()
+    public function catchAllGet(...$args) : array
     {
-        $this->di->get("session")->destroy();
-        return $this->di->get("response")->sendJson(
-            ["message" => "The session was destroyed."]
-        );
+        $dataSetKey = $args[0] ?? null;
+        $itemId = $args[1] ?? null;
+        $rest = $args[2] ?? null;
+
+        // Type check that $itemId is int
+
+        if ($dataSetKey && is_null($itemId)) {
+            return $this->getDataset($dataSetKey);
+        } elseif ($dataSetKey && !is_null($itemId) && is_null($rest)) {
+            return $this->getItem($dataSetKey, $itemId);
+        }
+
+        return $this->catchAll($args);
     }
 
 
 
     /**
-     * Get the dataset or parts of it.
+     * Get a dataset $key or parts of it by using the querystring.
      *
-     * @param string $key for the dataset
+     * @param array $key to the dataset to get.
      *
-     * @return Response
+     * @return array
      */
-    public function getDataset($key)
+    public function getDataset($key) : array
     {
         $request = $this->di->get("request");
-
-        $dataset = $this->di->get("rem")->getDataset($key);
+        $dataset = $this->di->get("remserver")->getDataset($key);
         $offset  = $request->getGet("offset", 0);
         $limit   = $request->getGet("limit", 25);
-        $res = [
+        $json = [
             "data" => array_slice($dataset, $offset, $limit),
             "offset" => $offset,
             "limit" => $limit,
             "total" => count($dataset)
         ];
-
-        return $this->di->get("response")->sendJson($res);
+        return [$json];
     }
 
 
@@ -90,20 +104,17 @@ class RemServerController implements InjectionAwareInterface
      * Get one item from the dataset.
      *
      * @param string $key    for the dataset
-     * @param string $itemId for the item to get
+     * @param int $itemId for the item to get
      *
-     * @return Response
+     * @return array
      */
-    public function getItem($key, $itemId)
+    public function getItem(string $key, int $itemId) : array
     {
-        $response = $this->di->get("response");
-
-        $item = $this->di->get("rem")->getItem($key, $itemId);
+        $item = $this->di->get("remserver")->getItem($key, $itemId);
         if (!$item) {
-            return $response->sendJson(["message" => "The item is not found."]);
+            return [["message" => "The item is not found."]];
         }
-
-        return $response->sendJson($item);
+        return [$item];
     }
 
 
@@ -114,13 +125,18 @@ class RemServerController implements InjectionAwareInterface
      *
      * @param string $key for the dataset
      *
-     * @return Response
+     * @return array
      */
-    public function postItem($key)
+    public function catchAllPost(...$args) : array
     {
+        $dataSetKey = $args[0] ?? null;
+
+        if (is_null($dataSetKey)) {
+            return $this->catchAll();
+        }
+
         try {
             $entry = $this->getRequestBody();
-            $item = $this->di->get("rem")->addItem($key, $entry);
         } catch (Exception $e) {
             return $this->di->get("response")->sendJson(
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
@@ -128,7 +144,8 @@ class RemServerController implements InjectionAwareInterface
             );
         }
 
-        return $this->di->get("response")->sendJson($item);
+        $item = $this->di->get("remserver")->addItem($dataSetKey, $entry);
+        return [$item];
     }
 
 
@@ -140,11 +157,20 @@ class RemServerController implements InjectionAwareInterface
      *
      * @return void
      */
-    public function putItem($key, $itemId)
+    public function catchAllPut(...$args) : array
     {
+        $dataSetKey = $args[0] ?? null;
+        $itemId = $args[1] ?? null;
+
+        if (!($dataSetKey && !is_null($itemId))) {
+            return $this->catchAll($args);
+        }
+
+        // This should be managed through the typed route
+        $itemId = intval($itemId);
+
         try {
             $entry = $this->getRequestBody();
-            $item = $this->di->get("rem")->upsertItem($key, $itemId, $entry);
         } catch (Exception $e) {
             return $this->di->get("response")->sendJson(
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
@@ -152,7 +178,8 @@ class RemServerController implements InjectionAwareInterface
             );
         }
 
-        return $this->di->get("response")->sendJson($item);
+        $item = $this->di->get("remserver")->upsertItem($dataSetKey, $itemId, $entry);
+        return [$item];
     }
 
 
@@ -163,27 +190,25 @@ class RemServerController implements InjectionAwareInterface
      * @param string $key    for the dataset
      * @param string $itemId for the item to delete
      *
-     * @return void
+     * @return array
      */
-    public function deleteItem($key, $itemId)
+    public function catchAllDelete(...$args) : array
     {
-        $this->di->get("rem")->deleteItem($key, $itemId);
-        return $this->di->get("response")->sendJson(null);
-    }
+        $dataSetKey = $args[0] ?? null;
+        $itemId = $args[1] ?? null;
 
+        if (!($dataSetKey && !is_null($itemId))) {
+            return $this->catchAll($args);
+        }
 
+        // This should be managed through the typed route
+        $itemId = intval($itemId);
 
-    /**
-     * Show a message that the route is unsupported, a local 404.
-     *
-     * @return void
-     */
-    public function anyUnsupported()
-    {
-        return $this->di->get("response")->sendJson(
-            ["message" => "404. The api/ does not support that."],
-            404
-        );
+        $this->di->get("remserver")->deleteItem($dataSetKey, $itemId);
+        $json = [
+            "message" => "Item id '$itemId' was deleted from dataset '$dataSetKey'.",
+        ];
+        return [$json];
     }
 
 
@@ -206,5 +231,17 @@ class RemServerController implements InjectionAwareInterface
         }
 
         return $entry;
+    }
+
+
+
+    /**
+     * Show a message that the route is unsupported, a local 404.
+     *
+     * @return void
+     */
+    public function catchAll()
+    {
+        return [["message" => "404. The api/ does not support that."], 404];
     }
 }

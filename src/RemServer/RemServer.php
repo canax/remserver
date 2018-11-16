@@ -2,29 +2,20 @@
 
 namespace Anax\RemServer;
 
-use \Anax\Configure\ConfigureInterface;
-use \Anax\Configure\ConfigureTrait;
-use \Anax\Session\SessionInterface;
+use Anax\Session\SessionInterface;
 
 /**
- * REM Server.
+ * REM Server using session to store information.
  */
-class RemServer implements ConfigureInterface
+class RemServer
 {
-    use ConfigureTrait;
-
-
-
     /**
+     * @var array  $dataset the dataset to add as default dataset.
      * @var object $session inject a reference to the session.
-     */
-    protected $session;
-
-
-
-    /**
      * @var string $key to use when storing in session.
      */
+    private $dataset = [];
+    protected $session;
     const KEY = "remserver";
 
 
@@ -36,10 +27,37 @@ class RemServer implements ConfigureInterface
      *
      * @return self
      */
-    public function injectSession(SessionInterface $session)
+    public function injectSession(SessionInterface $session) : object
     {
         $this->session = $session;
         return $this;
+    }
+
+
+
+    /**
+     * Set the default dataset to use.
+     *
+     * @param array $dataset array with absolute paths to json files to load.
+     *
+     * @return self
+     */
+    public function setDefaultDataset(array $dataset) : object
+    {
+        $this->dataset = $dataset;
+        return $this;
+    }
+
+
+
+    /**
+     * Get the default dataset that is used.
+     *
+     * @return self
+     */
+    public function getDefaultDataset() : array
+    {
+        return $this->dataset;
     }
 
 
@@ -53,19 +71,14 @@ class RemServer implements ConfigureInterface
      */
     public function init()
     {
-        if (!isset($this->config["dataset"])) {
-            throw new Exception("Configuration missing dataset to load.");
-        }
-
-        $files = $this->config["dataset"];
-        $dataset = [];
-        foreach ($files as $file) {
+        $json = [];
+        foreach ($this->dataset as $file) {
             $content = file_get_contents($file);
             $key = pathinfo($file, PATHINFO_FILENAME);
-            $dataset[$key] = json_decode($content, true);
+            $json[$key] = json_decode($content, true);
         }
 
-        $this->session->set(self::KEY, $dataset);
+        $this->session->set(self::KEY, $json);
         return $this;
     }
 

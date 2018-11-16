@@ -4,6 +4,6 @@
  */
 return [
     "dataset" => [
-        __DIR__ . "/remserver/dataset/users.json"
+        __DIR__ . "/dataset/users.json"
     ]
 ];
