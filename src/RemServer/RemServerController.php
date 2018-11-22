@@ -38,7 +38,7 @@ class RemServerController implements ContainerInjectableInterface
      */
     public function initActionGet() : array
     {
-        $rem = $this->di->get("remserver"); 
+        $rem = $this->di->get("remserver");
         $rem->init();
         $json = [
             "message" => "The session is initiated with the default dataset(s).",
@@ -138,10 +138,10 @@ class RemServerController implements ContainerInjectableInterface
         try {
             $entry = $this->getRequestBody();
         } catch (Exception $e) {
-            return $this->di->get("response")->sendJson(
+            return [
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
                 500
-            );
+            ];
         }
 
         $item = $this->di->get("remserver")->addItem($dataSetKey, $entry);
@@ -172,10 +172,10 @@ class RemServerController implements ContainerInjectableInterface
         try {
             $entry = $this->getRequestBody();
         } catch (Exception $e) {
-            return $this->di->get("response")->sendJson(
+            return [
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
                 500
-            );
+            ];
         }
 
         $item = $this->di->get("remserver")->upsertItem($dataSetKey, $itemId, $entry);
@@ -197,7 +197,10 @@ class RemServerController implements ContainerInjectableInterface
         $dataSetKey = $args[0] ?? null;
         $itemId = $args[1] ?? null;
 
-        if (!($dataSetKey && !is_null($itemId))) {
+        if (!($dataSetKey && !is_null($itemId))
+            || count($args) != 2
+            || !(is_int($itemId) || ctype_digit($itemId))
+        ) {
             return $this->catchAll($args);
         }
 
@@ -242,6 +245,6 @@ class RemServerController implements ContainerInjectableInterface
      */
     public function catchAll()
     {
-        return [["message" => "404. The api/ does not support that."], 404];
+        return [["message" => "404. The api does not support that."], 404];
     }
 }

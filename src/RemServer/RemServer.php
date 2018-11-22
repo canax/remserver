@@ -65,7 +65,7 @@ class RemServer
     /**
      * Fill the session with default data that are read from files.
      *
-     * @throws Exception when bad configuration.
+     * @throws Anax\RemServer\Exception when bad configuration.
      *
      * @return self
      */
@@ -73,6 +73,9 @@ class RemServer
     {
         $json = [];
         foreach ($this->dataset as $file) {
+            if (!(is_file($file) && is_readable($file))) {
+                throw new Exception("File '$file' for dataset not readable.");
+            }
             $content = file_get_contents($file);
             $key = pathinfo($file, PATHINFO_FILENAME);
             $json[$key] = json_decode($content, true);

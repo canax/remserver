@@ -2,7 +2,7 @@ Revision history
 =================================
 
 
-v2.0.* (2018-11-16)
+v2.0.0 (2018-11-22)
 ---------------------------------
 
 * Add codacy badge.
@@ -11,6 +11,9 @@ v2.0.* (2018-11-16)
 * Use anax/anax-lite as base.
 * No need to setup remserver in $di, as a controller.
 * Rearrange the configuration files and store all in config/remserver.
+* Refactor controller to work with new controller layout using catchAll().
+* Rewrote testcases.
+
 
 
 v1.1.0 (2018-03-08)

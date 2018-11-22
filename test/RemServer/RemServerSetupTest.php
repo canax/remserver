@@ -2,12 +2,13 @@
 
 namespace Anax\RemServer;
 
-use \Anax\Session\Session;
+use Anax\Session\Session;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Test for RemServer.
+ * Test for modelclass RemServer.
  */
-class RemServerTest extends \PHPUnit\Framework\TestCase
+class RemServerSetupTest extends TestCase
 {
     /**
      * Create an object.
@@ -21,13 +22,27 @@ class RemServerTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Check that the configuration can be set and returns instance.
+     * Check that the default dataset can be set and and returns instance.
      */
-    public function testConfigure()
+    public function testSetDefaultDataSet()
     {
         $rem = new RemServer();
-        $obj = $rem->configure(["some" => "value"]);
+        $obj = $rem->setDefaultDataset(["some" => "value"]);
         $this->assertEquals($rem, $obj);
+    }
+
+
+
+    /**
+     * Check that the default dataset can be set and retrieved.
+     */
+    public function testGetDefaultDataSet()
+    {
+        $rem = new RemServer();
+        $dataset = ["some" => "value"];
+        $rem->setDefaultDataset($dataset);
+        $res = $rem->getDefaultDataset();
+        $this->assertEquals($dataset, $res);
     }
 
 
@@ -46,18 +61,51 @@ class RemServerTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Init the REM server.
+     * Load default configuration file.
+     */
+    public function testLoadDefaultConfigFile()
+    {
+        $rem = new RemServer();
+        $session = new Session(["name" => "test"]);
+
+        $config = require ANAX_INSTALL_PATH . "/config/remserver/config.php";
+        $dataset = $config["dataset"] ?? null;
+        $this->assertArrayHasKey("dataset", $config);
+        $this->assertInternalType("array", $dataset);
+    }
+
+
+
+    /**
+     * Allow init with empty dataset.
+     */
+    public function testEmptyDatasetAllowed()
+    {
+        $rem = new RemServer();
+        $session = new Session(["name" => "test"]);
+
+        $obj = $rem->setDefaultDataset([])
+            ->injectSession($session)
+            ->init();
+        $this->assertEquals($rem, $obj);
+    }
+
+
+
+    /**
+     * Make all steps to init the remserver.
      */
     public function testInit()
     {
-        $rem     = new RemServer();
+        $rem = new RemServer();
         $session = new Session(["name" => "test"]);
-        $this->rem = $rem;
 
-        $obj = $rem->configure("remserver.php")
-                   ->injectSession($session)
-                   ->init();
+        $config = require ANAX_INSTALL_PATH . "/config/remserver/config.php";
+        $dataset = $config["dataset"] ?? null;
 
+        $obj = $rem->setDefaultDataset($dataset)
+            ->injectSession($session)
+            ->init();
         $this->assertEquals($rem, $obj);
     }
 }

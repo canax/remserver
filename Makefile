@@ -62,7 +62,8 @@ help:
 container ?= latest
 
 BIN     := .bin
-PHPUNIT := $(BIN)/phpunit
+#PHPUNIT := $(BIN)/phpunit
+PHPUNIT := vendor/bin/phpunit
 PHPLOC 	:= $(BIN)/phploc
 PHPCS   := $(BIN)/phpcs
 PHPCBF  := $(BIN)/phpcbf
@@ -141,6 +142,15 @@ build: test doc #theme less-compile less-minify js-minify
 .PHONY:  install
 install: prepare install-tools-php install-tools-bash
 	@$(call HELPTEXT,$@)
+	composer install
+
+
+
+# target: install-lowest          - Install lowest version of deoendencies
+.PHONY:  install-lowest
+install-lowest:
+	@$(call HELPTEXT,$@)
+	composer update --no-dev --prefer-lowest
 
 
 
@@ -246,20 +256,21 @@ install-tools-php:
 	curl -Lso $(PHPCBF) https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar && chmod 755 $(PHPCBF)
 
 	curl -Lso $(PHPMD) http://static.phpmd.org/php/latest/phpmd.phar && chmod 755 $(PHPMD)
+	# curl -Lso $(PHPMD) http://www.student.bth.se/~mosstud/download/phpmd.phar && chmod 755 $(PHPMD)
 
 	curl -Lso $(PHPLOC) https://phar.phpunit.de/phploc.phar && chmod 755 $(PHPLOC)
 
 	curl -Lso $(BEHAT) https://github.com/Behat/Behat/releases/download/v3.3.0/behat.phar && chmod 755 $(BEHAT)
 
-	# Get PHPUNIT depending on current PHP installation
-	curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-$(shell \
-	 	php -r "echo version_compare(PHP_VERSION, '7.0', '<') \
-			? '5' \
-			: (version_compare(PHP_VERSION, '7.1', '>=') \
-				? '7' \
-				: '6'\
-		);" \
-		).phar && chmod 755 $(PHPUNIT)
+	# # Get PHPUNIT depending on current PHP installation
+	# curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-$(shell \
+	#  	php -r "echo version_compare(PHP_VERSION, '7.0', '<') \
+	# 		? '5' \
+	# 		: (version_compare(PHP_VERSION, '7.1', '>=') \
+	# 			? '7' \
+	# 			: '6'\
+	# 	);" \
+	# 	).phar && chmod 755 $(PHPUNIT)
 
 	[ ! -f composer.json ] || composer install
 
@@ -285,7 +296,7 @@ check-tools-php:
 .PHONY: phpunit
 phpunit: prepare
 	@$(call HELPTEXT,$@)
-	[ ! -d "test" ] || $(PHPUNIT) --configuration .phpunit.xml
+	[ ! -d "test" ] || $(PHPUNIT) --configuration .phpunit.xml $(options)
 
 
 
@@ -313,7 +324,7 @@ endif
 .PHONY: phpmd
 phpmd: prepare
 	@$(call HELPTEXT,$@)
-	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
+	- [ ! -f .phpmd.xml ] || [ ! -d src ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
 
 
 
@@ -321,7 +332,7 @@ phpmd: prepare
 .PHONY: phploc
 phploc: prepare
 	@$(call HELPTEXT,$@)
-	$(PHPLOC) src > build/phploc
+	[ ! -d src ] || $(PHPLOC) src > build/phploc
 
 
 
@@ -366,8 +377,8 @@ install-tools-bash:
 .PHONY: check-tools-bash
 check-tools-bash:
 	@$(call HELPTEXT,$@)
-	which $(SHELLCHECK) && $(SHELLCHECK) --version
-	which $(BATS) && $(BATS) --version
+	@$(call CHECK_VERSION, $(SHELLCHECK))
+	@$(call CHECK_VERSION, $(BATS))
 
 
 
@@ -424,7 +435,18 @@ define GIT_IGNORE_FILES
 endef
 export GIT_IGNORE_FILES
 
-# target: cimage-update           - Install/update Cimage to latest version.
+# target: cimage-install          - Install Cimage in htdocs
+.PHONY: cimage-install
+cimage-install:
+	@$(call HELPTEXT,$@)
+	install -d htdocs/img htdocs/cimage cache/cimage
+	chmod 777 cache/cimage
+	$(ECHO) "$$GIT_IGNORE_FILES" | bash -c 'cat > cache/cimage/.gitignore'
+	cp vendor/mos/cimage/webroot/img.php htdocs/cimage
+	cp vendor/mos/cimage/webroot/img/car.png htdocs/img/
+	touch htdocs/cimage/img_config.php
+
+# target: cimage-update           - Update Cimage to latest version.
 .PHONY: cimage-update
 cimage-update:
 	@$(call HELPTEXT,$@)

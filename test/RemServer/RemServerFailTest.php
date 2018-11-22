@@ -2,27 +2,27 @@
 
 namespace Anax\RemServer;
 
-use \Anax\Session\Session;
+use Anax\Session\Session;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Test for RemServer.
+ * Test error handling for RemServer.
  */
-class RemServerFailTest extends \PHPUnit\Framework\TestCase
+class RemServerFailTest extends TestCase
 {
     /**
-     * Init the REM server without dataset throws exception.
+     * Path to file in dataset is invalid.
      *
-     * @expectedException Exception
+     * @expectedException Anax\RemServer\Exception
      */
-    public function testInit()
+    public function testPathToDatasetFileInvalid()
     {
-        $rem     = new RemServer();
+        $rem = new RemServer();
         $session = new Session(["name" => "test"]);
+        $dataset = [ANAX_INSTALL_PATH . "/config/remserver/dataset/users-NO.json"];
 
-        $obj = $rem->configure([])
-                   ->injectSession($session)
-                   ->init();
-
-        $this->assertEquals($rem, $obj);
+        $obj = $rem->setDefaultDataset($dataset)
+            ->injectSession($session)
+            ->init();
     }
 }

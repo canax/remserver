@@ -2,12 +2,13 @@
 
 namespace Anax\RemServer;
 
-use \Anax\Session\Session;
+use Anax\Session\Session;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Test for RemServer.
+ * Test for how to use RemServer.
  */
-class RemServerUsageTest extends \PHPUnit\Framework\TestCase
+class RemServerUsageTest extends TestCase
 {
     /**
      * @var RemServer $rem
@@ -17,16 +18,16 @@ class RemServerUsageTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Setup the REM server.
+     * Setup the remserver before each test.
      */
     public function setUp()
     {
         $this->rem = new RemServer();
         $session = new Session(["name" => "test"]);
-
-        $this->rem->configure("remserver.php")
-                  ->injectSession($session)
-                  ->init();
+        $config = require ANAX_INSTALL_PATH . "/config/remserver/config.php";
+        $this->rem->setDefaultDataset($config["dataset"])
+            ->injectSession($session)
+            ->init();
     }
 
 

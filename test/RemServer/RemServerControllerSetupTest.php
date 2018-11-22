@@ -2,20 +2,22 @@
 
 namespace Anax\RemServer;
 
-use \Anax\DI\DIFactoryTest;
+use Anax\DI\DIFactoryConfig;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Test for RemServerController.
+ * Test for setting up the RemServerController.
  */
-class RemServerControllerSetupTest extends \PHPUnit\Framework\TestCase
+class RemServerControllerSetupTest extends TestCase
 {
     /**
      * Setup before each testcase
      */
     public function setUp()
     {
-        $this->di = new DIFactoryTest();
-        $this->di->configure("di.php");
+        $this->di = new DIFactoryConfig();
+        $this->di->loadServices(ANAX_INSTALL_PATH . "/config/di");
+        $this->di->loadServices(ANAX_INSTALL_PATH . "/test/config/di");
     }
 
 
@@ -33,10 +35,7 @@ class RemServerControllerSetupTest extends \PHPUnit\Framework\TestCase
         $obj = $rem->setDI($this->di);
         $this->assertEquals($rem, $obj);
 
-        // Create using $di
-        $rem = $this->di->get("remController");
-        $rem1 = $this->di->get("remController");
-        $this->assertInstanceOf("Anax\RemServer\RemServerController", $rem);
-        $this->assertEquals($rem, $rem1);
+        // Initialize
+        $rem->initialize();
     }
 }

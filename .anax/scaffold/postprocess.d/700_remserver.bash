@@ -9,5 +9,4 @@
 rsync -av vendor/anax/remserver/config ./
 
 # Copy the documentation
-install -d content/doc
-rsync -av vendor/anax/remserver/content/index.md ./content/doc/remserver.md
+rsync -av vendor/anax/remserver/content/index.md ./content/remserver-api.md

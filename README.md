@@ -1,4 +1,4 @@
-Anax remserver
+Anax REM server (remserver)
 ==================================
 
 [![Latest Stable Version](https://poser.pugx.org/anax/remserver/v/stable)](https://packagist.org/packages/anax/remserver)
@@ -14,20 +14,75 @@ Anax remserver
 [![Maintainability](https://api.codeclimate.com/v1/badges/47f7756bad18e2afbd71/maintainability)](https://codeclimate.com/github/canax/remserver/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2ee155e2516f42f3b76533bc667b6d01)](https://www.codacy.com/app/mosbth/remserver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=canax/remserver&amp;utm_campaign=Badge_Grade)
 
-Anax remserver module implementing a REM server. Use this module together with an Anax installation to enable a scaffolded REM server, useful for prototyping.
+Anax REM server (remserver) module implements a REM server. A REM server is a REST Mockup API, useful for development and test of REST clients.
 
-This REM server can be used to try out HTTP methods for GET, PUT, POST and DELETE to use CRUD operations on predefined datasets. The modified data is stored in the session.
+You can use this module, together with an Anax installation, to enable a scaffolded REM server, useful for test, development and prototyping.
+
+This remserver can be used with various HTTP methods to use CRUD operations on predefined datasets.
+
+The data is stored in the session and can therefore not be shared between users and browsers.
+
+
+
+Table of content
+------------------------------------
+
+* [Install as Anax module](#Install-as-Anax-module)
+* [Install using scaffold postprocessing file](#Install-using-scaffold-postprocessing-file)
+* [Install Anax](#Install-Anax)
+
+You can also read this [documentation online](https://canax.github.io/remserver/).
+
+
+
+Install as Anax module
+------------------------------------
+
+This is how you install the module into an existing Anax installation.
+
+Install using composer.
+
+```
+composer require anax/remserver
+```
+
+Copy the needed configuration and setup the remserver as a route handler for the route `remserver`.
+
+```
+rsync -av vendor/anax/remserver/config ./
+```
+
+The remserver is now active on the route `remserver/` according to the API documentation. You may try it out on the route `remserver/users` to get the default dataset `users`. 
+
+Optionally you may copy the API documentation.
+
+```
+rsync -av vendor/anax/remserver/content/index.md content/remserver-api.md
+```
+
+The API documentation is now available through the route `remserver-api`.
+
+
+
+Install using scaffold postprocessing file
+------------------------------------
+
+The module supports a postprocessing installation script, to be used with Anax scaffolding. The script executes the default installation, as outlined above.
+
+```text
+bash vendor/anax/remserver/.anax/scaffold/postprocess.d/700_remserver.bash
+```
+
+The postprocessing script should be run after the `composer require` is done.
 
 
 
 Install and setup Anax 
 ------------------------------------
 
-Proceed to the next section if you already have an installation of Anax.
+You need a Anax installation, before you can use this module. You can create a sample Anax installation, using the scaffolding utility [`anax-cli`](https://github.com/canax/anax-cli).
 
-You need a Anax installation, before you can use this module. You can create a sample Anax installation like this, using the scaffolding utility [`anax-cli`](https://github.com/canax/anax-cli).
-
-Scaffold a sample Anax installation `anax-site-develop` into directory `rem`.
+Scaffold a sample Anax installation `anax-site-develop` into the directory `rem`.
 
 ```
 $ anax create rem anax-site-develop
@@ -38,65 +93,17 @@ Point your webserver to `rem/htdocs` and Anax should display a Home-page.
 
 
 
-Install REM server as part of Anax
-------------------------------------
+Dependency
+------------------
 
-Install using composer and then integrate the module with your Anax installation.
-
-
-
-### Install with composer
-
-We install the REM server as a module from Packagist.
-
-```
-composer require anax/remserver
-```
-
-
-
-### Configuration files for REM server
-
-We need to copy the configuration files for the REM server.
-
-```
-rsync -av vendor/anax/remserver/config/remserver* config
-```
-
-
-
-### API documentation
-
-We copy the API documentation for the REM server.
-
-```
-rsync -av vendor/anax/remserver/content/index.md content/remserver.md
-```
-
-The API documentation is now available through the route `remserver`.
-
-
-
-### Router files
-
-```
-rsync -av vendor/anax/remserver/config/route/remserver.php config/route
-```
-
-You need to include the router file in your router configuration `config/route.php`. There is a sample you can use in `vendor/anax/remserver/config/route.php`.
-
-
-
-### DI services
-
-You need to add the configuration for the di services `config/di.php`. There is a sample you can use in `vendor/anax/remserver/config/di.php`.
+This is a Anax modulen and primarly intended to be used together with the Anax framework.
 
 
 
 License
-------------------------------------
+------------------
 
-This software carries a MIT license.
+This software carries a MIT license. See [LICENSE.txt](LICENSE.txt) for details.
 
 
 

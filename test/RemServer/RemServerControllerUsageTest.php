@@ -2,22 +2,35 @@
 
 namespace Anax\RemServer;
 
-use \Anax\DI\DIFactoryTest;
+use Anax\DI\DIFactoryConfig;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Test for RemServerController.
+ * Test for using the RemServerController.
  */
-class RemServerControllerUsageTest extends \PHPUnit\Framework\TestCase
+class RemServerControllerUsageTest extends TestCase
 {
+    /**
+     * @var Anax\DI\DIFactoryConfig            $di
+     * @var Anax\RemServer\RemServerController $controller
+     */
+    private $di;
+    private $controller;
+
+
+
     /**
      * Setup before each testcase
      */
     protected function setUp()
     {
-        $this->di = new DIFactoryTest();
-        $this->di->configure("di.php");
-        $this->controller = $this->di->get("remController");
-        $this->rem = $this->di->get("rem");
+        $this->di = new DIFactoryConfig();
+        $this->di->loadServices(ANAX_INSTALL_PATH . "/config/di");
+        $this->di->loadServices(ANAX_INSTALL_PATH . "/test/config/di");
+
+        $this->controller = new RemServerController();
+        $this->controller->setDI($this->di);
+        $this->controller->initialize();
     }
 
 
@@ -33,66 +46,14 @@ class RemServerControllerUsageTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Prepare using anyPrepare().
-     */
-    public function testAnyPrepare()
-    {
-        ob_start();
-        $response = $this->controller->anyDestroy();
-        $this->assertContains("destroyed", $response->getBody());
-        ob_end_clean();
-        $res = $this->rem->hasDataset();
-        $this->assertFalse($res);
-
-        $this->controller->anyPrepare();
-        $res = $this->rem->hasDataset();
-        $this->assertTrue($res);
-    }
-
-
-
-    /**
      * Explicitly init the rem server.
      */
-    public function testAnyInit()
+    public function testInitActionGet()
     {
-        $res = $this->rem->hasDataset();
-        $this->assertFalse($res);
-
-        ob_start();
-        $response = $this->controller->anyInit();
-        $this->assertContains("is initiated", $response->getBody());
-        ob_end_clean();
-
-        $res = $this->rem->hasDataset();
-        $this->assertTrue($res);
-    }
-
-
-
-    /**
-     * Explicitly destroy the session and clear remserver.
-     */
-    public function testAnyDestroy()
-    {
-        $res = $this->rem->hasDataset();
-        $this->assertFalse($res);
-
-        ob_start();
-        $response = $this->controller->anyInit();
-        $this->assertContains("is initiated", $response->getBody());
-        ob_end_clean();
-
-        $res = $this->rem->hasDataset();
-        $this->assertTrue($res);
-
-        ob_start();
-        $response = $this->controller->anyDestroy();
-        $this->assertContains("was destroyed", $response->getBody());
-        ob_end_clean();
-
-        $res = $this->rem->hasDataset();
-        $this->assertFalse($res);
+        $res = $this->controller->initActionGet();
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
+        $this->assertContains("is initiated", $res[0]["message"]);
     }
 
 
@@ -100,164 +61,252 @@ class RemServerControllerUsageTest extends \PHPUnit\Framework\TestCase
     /**
      * Get the default dataset.
      */
-    public function testGetDataset()
+    public function testGetDefaultDataset()
     {
-        ob_start();
-        $response = $this->controller->anyInit();
-        $response = $this->controller->getDataset("users");
-        ob_end_clean();
+        $this->controller->initActionGet();
+        $res = $this->controller->catchAllGet("users");
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
 
-        // A default dataset
-        $json = json_decode($response->getBody());
-        $this->assertEquals(0, $json->offset);
-        $this->assertEquals(25, $json->limit);
-        $this->assertEquals(count($json->data), $json->total);
-        $this->assertEquals(1, $json->data[0]->id);
-        $this->assertEquals("Phuong", $json->data[0]->firstName);
-        $this->assertEquals("Allison", $json->data[0]->lastName);
+        $json = $res[0];
+        $item = $json["data"][0];
+        $this->assertEquals(1, $item["id"]);
+        $this->assertEquals("Phuong", $item["firstName"]);
+        $this->assertEquals("Allison", $item["lastName"]);
+
+        $this->assertEquals(0, $json["offset"]);
+        $this->assertEquals(25, $json["limit"]);
+        $this->assertEquals(12, $json["total"]);
     }
 
 
 
     /**
-     * Get an item from the default dataset.
+     * Get first parts of default dataset, no offset.
      */
-    public function testGetItem()
+    public function testGetFirstPartsOfDefaultDataset()
     {
-        // The first item
-        ob_start();
-        $this->controller->anyInit();
-        $response = $this->controller->getItem("users", 1);
-        ob_end_clean();
+        $this->controller->initActionGet();
 
-        $json = json_decode($response->getBody());
-        $this->assertEquals(1, $json->id);
-        $this->assertEquals("Phuong", $json->firstName);
-        $this->assertEquals("Allison", $json->lastName);
-
-        // Not found item
-        ob_start();
-        $response = $this->controller->getItem("users", -1);
-        ob_end_clean();
-
-        $json = json_decode($response->getBody());
-        $this->assertContains("not found", $json->message);
+        $this->di->get("request")->setGlobals([
+            "get" => [
+                "offset" => 0,
+                "limit" => 2,
+            ]
+        ]);
+        $res = $this->controller->catchAllGet("users");
+        $json = $res[0];
+        $this->assertEquals(2, count($json["data"]));
+        $this->assertEquals(1, $json["data"][0]["id"]);
+        $this->assertEquals(2, $json["data"][1]["id"]);
+        $this->assertEquals(0, $json["offset"]);
+        $this->assertEquals(2, $json["limit"]);
+        $this->assertEquals(12, $json["total"]);
     }
 
 
 
     /**
-     * Create a new item.
+     * Get middle parts of default dataset, with offset.
      */
-    public function testPostItem()
+    public function testGetMiddlePartsOfDefaultDataset()
     {
-        ob_start();
-        $this->controller->anyInit();
-        $this->di->get("request")->setBody(
-            json_encode([
-                "firstName" => "Mumin",
-                "lastName" => "Trollet",
-            ])
-        );
-        $response = $this->controller->postItem("users");
-        ob_end_clean();
+        $this->controller->initActionGet();
 
-        $json = json_decode($response->getBody());
-        $this->assertEquals(13, $json->id);
-        $this->assertEquals("Mumin", $json->firstName);
-        $this->assertEquals("Trollet", $json->lastName);
+        $this->di->get("request")->setGlobals([
+            "get" => [
+                "offset" => 2,
+                "limit" => 2,
+            ]
+        ]);
+        $res = $this->controller->catchAllGet("users");
+        $json = $res[0];
+        $this->assertEquals(2, count($json["data"]));
+        $this->assertEquals(3, $json["data"][0]["id"]);
+        $this->assertEquals(4, $json["data"][1]["id"]);
+        $this->assertEquals(2, $json["offset"]);
+        $this->assertEquals(2, $json["limit"]);
+        $this->assertEquals(12, $json["total"]);
     }
 
 
 
     /**
-     * Update an item.
+     * Get last parts of default dataset, with offset + limit exceeding.
+     */
+    public function testGetLastPartsOfDefaultDataset()
+    {
+        $this->controller->initActionGet();
+
+        $this->di->get("request")->setGlobals([
+            "get" => [
+                "offset" => 11,
+                "limit" => 2,
+            ]
+        ]);
+        $res = $this->controller->catchAllGet("users");
+        $json = $res[0];
+        $this->assertEquals(1, count($json["data"]));
+        $this->assertEquals(12, $json["data"][0]["id"]);
+        $this->assertEquals(11, $json["offset"]);
+        $this->assertEquals(2, $json["limit"]);
+        $this->assertEquals(12, $json["total"]);
+    }
+
+
+
+    /**
+     * Get new and empty dataset.
+     */
+    public function testGetNewDataset()
+    {
+        $res = $this->controller->catchAllGet("things");
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
+
+        $json = $res[0];
+        $this->assertEquals([], $json["data"]);
+        $this->assertEquals(0, $json["offset"]);
+        $this->assertEquals(25, $json["limit"]);
+        $this->assertEquals(0, $json["total"]);
+    }
+
+
+
+    /**
+     * Get the item by id from the default dataset.
+     */
+    public function testGetItemFromDefaultDataset()
+    {
+        $this->controller->initActionGet();
+        $res = $this->controller->catchAllGet("users", 1);
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
+
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("Phuong", $json["firstName"]);
+        $this->assertEquals("Allison", $json["lastName"]);
+    }
+
+
+
+    /**
+     * Post (add/insert) a new item to the default dataset.
+     */
+    public function testPostNewItem()
+    {
+        $this->di->get("request")->setBody('{"some": "thing"}');
+        $res = $this->controller->catchAllPost("users");
+        $json = $res[0];
+        $this->assertEquals(13, $json["id"]);
+        $this->assertEquals("thing", $json["some"]);
+
+        $res = $this->controller->catchAllGet("users", 13);
+        $json = $res[0];
+        $this->assertEquals(13, $json["id"]);
+        $this->assertEquals("thing", $json["some"]);
+    }
+
+
+
+    /**
+     * Post (add/insert) a new item to new dataset.
+     */
+    public function testPostNewItemNewDataset()
+    {
+        $this->di->get("request")->setBody('{"some": "thing"}');
+        $res = $this->controller->catchAllPost("things");
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["some"]);
+
+        $res = $this->controller->catchAllGet("things", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["some"]);
+    }
+
+
+
+    /**
+     * Put (insert/update/replace) an item to the default dataset.
      */
     public function testPutItem()
     {
-        // Add item
-        ob_start();
-        $this->controller->anyInit();
-        $this->di->get("request")->setBody(
-            json_encode([
-                "firstName" => "Mumin",
-                "lastName" => "Trollet",
-            ])
-        );
-        $response = $this->controller->postItem("users");
-        ob_end_clean();
+        $this->controller->initActionGet();
 
-        $json = json_decode($response->getBody());
-        $this->assertEquals(13, $json->id);
-        $this->assertEquals("Mumin", $json->firstName);
-        $this->assertEquals("Trollet", $json->lastName);
+        $this->di->get("request")->setBody('{"id": 1, "other": "thing"}');
+        $res = $this->controller->catchAllPut("users", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["other"]);
 
-        // Update item
-        ob_start();
-        $this->controller->anyInit();
-        $this->di->get("request")->setBody(
-            json_encode([
-                "id" => 13,
-                "firstName" => "Mega",
-                "lastName" => "Mic",
-            ])
-        );
-        $response = $this->controller->putItem("users", 13);
-        ob_end_clean();
-
-        $json = json_decode($response->getBody());
-        $this->assertEquals(13, $json->id);
-        $this->assertEquals("Mega", $json->firstName);
-        $this->assertEquals("Mic", $json->lastName);
+        $res = $this->controller->catchAllGet("users", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["other"]);
     }
 
 
 
     /**
-     * Delete an item.
+     * Put (insert/update/replace) an item to new dataset.
      */
-    public function testDeleteItem()
+    public function testPutItemNewDataset()
     {
-        // Delete item
-        ob_start();
-        $this->controller->anyInit();
-        $response = $this->controller->deleteItem("users", 1);
-        ob_end_clean();
+        $this->di->get("request")->setBody('{"id": 1, "other": "thing"}');
+        $res = $this->controller->catchAllPut("things", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["other"]);
 
-        $json = json_decode($response->getBody());
-        $this->assertNull($json);
-
-        // Get deleted item
-        ob_start();
-        $response = $this->controller->getItem("users", 1);
-        ob_end_clean();
-
-        $json = json_decode($response->getBody());
-        $this->assertContains("not found", $json->message);
-
-        // Delete same item again
-        ob_start();
-        $response = $this->controller->deleteItem("users", 1);
-        ob_end_clean();
-
-        $json = json_decode($response->getBody());
-        $this->assertNull($json);
+        $res = $this->controller->catchAllGet("things", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("thing", $json["other"]);
     }
 
 
 
     /**
-     * Route for 404.
+     * Delete an item by id from the default dataset.
      */
-    public function testAnyUnsupported()
+    public function testDeleteItemById()
     {
-        ob_start();
-        $this->controller->anyInit();
-        $response = $this->controller->anyUnsupported();
-        ob_end_clean();
+        $this->controller->initActionGet();
 
-        $json = json_decode($response->getBody());
-        $this->assertContains("not support", $json->message);
-        $this->assertEquals(404, $response->getStatusCode());
+        $res = $this->controller->catchAllGet("users", 1);
+        $json = $res[0];
+        $this->assertEquals(1, $json["id"]);
+        $this->assertEquals("Phuong", $json["firstName"]);
+        $this->assertEquals("Allison", $json["lastName"]);
+
+        $res = $this->controller->catchAllDelete("users", 1);
+        $json = $res[0];
+        $this->assertContains("Item id '1'", $json["message"]);
+        $this->assertContains("was deleted", $json["message"]);
+        $this->assertContains("dataset 'users'", $json["message"]);
+
+        $res = $this->controller->catchAllGet("users", 1);
+        $json = $res[0];
+        $this->assertContains("not found", $json["message"]);
+    }
+
+
+
+    /**
+     * Check the 404 route.
+     */
+    public function test404()
+    {
+        $res = $this->controller->catchAll();
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
+
+        $json = $res[0];
+        $status = $res[1];
+        $this->assertContains("not support", $json["message"]);
+        $this->assertEquals(404, $status);
     }
 }
