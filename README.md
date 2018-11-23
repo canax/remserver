@@ -29,7 +29,9 @@ Table of content
 
 * [Install as Anax module](#Install-as-Anax-module)
 * [Install using scaffold postprocessing file](#Install-using-scaffold-postprocessing-file)
-* [Install Anax](#Install-Anax)
+* [Install and setup Anax](#Install-and-setup-Anax)
+* [Dependency](#Dependency)
+* [License](#License)
 
 You can also read this [documentation online](https://canax.github.io/remserver/).
 
