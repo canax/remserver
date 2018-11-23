@@ -40,7 +40,7 @@ class RemServerControllerUsageFailTest extends TestCase
      */
     public function testGetItemDoesNotExists()
     {
-        $res = $this->controller->catchAllGet("things", 1);
+        $res = $this->controller->getItem("things", 1);
 
         $json = $res[0];
         $this->assertContains("not found", $json["message"]);
@@ -54,7 +54,7 @@ class RemServerControllerUsageFailTest extends TestCase
     public function testPostItemJsonNotArray()
     {
         $this->di->get("request")->setBody("'bad json'");
-        $res = $this->controller->catchAllPost("users");
+        $res = $this->controller->postItem("users");
 
         $json = $res[0];
         $status = $res[1];
@@ -70,7 +70,7 @@ class RemServerControllerUsageFailTest extends TestCase
     public function testPostItemBadJson()
     {
         $this->di->get("request")->setBody("{ bad json }");
-        $res = $this->controller->catchAllPost("users");
+        $res = $this->controller->postItem("users");
 
         $json = $res[0];
         $status = $res[1];
@@ -86,7 +86,7 @@ class RemServerControllerUsageFailTest extends TestCase
     public function testPutItemJsonNotArray()
     {
         $this->di->get("request")->setBody("bad json");
-        $res = $this->controller->catchAllPut("users", 1);
+        $res = $this->controller->putItem("users", 1);
 
         $json = $res[0];
         $status = $res[1];
@@ -102,7 +102,7 @@ class RemServerControllerUsageFailTest extends TestCase
     public function testPutItemBadJson()
     {
         $this->di->get("request")->setBody("{ bad json }");
-        $res = $this->controller->catchAllPut("users", 1);
+        $res = $this->controller->putItem("users", 1);
 
         $json = $res[0];
         $status = $res[1];
@@ -116,7 +116,7 @@ class RemServerControllerUsageFailTest extends TestCase
      */
     public function testDeleteItemWhenDatasetNotExists()
     {
-        $res = $this->controller->catchAllDelete("users", 99);
+        $res = $this->controller->deleteItem("users", 99);
         
         $json = $res[0];
         $this->assertContains("Item id '99'", $json["message"]);
@@ -132,39 +132,11 @@ class RemServerControllerUsageFailTest extends TestCase
     public function testDeleteItemNotExists()
     {
         $this->controller->initActionGet();
-        $res = $this->controller->catchAllDelete("users", 99);
+        $res = $this->controller->deleteItem("users", 99);
 
         $json = $res[0];
         $this->assertContains("Item id '99'", $json["message"]);
         $this->assertContains("was deleted", $json["message"]);
         $this->assertContains("dataset 'users'", $json["message"]);
-    }
-
-
-
-    /**
-     * Delete an item without specifying a numeric key.
-     */
-    public function testDeleteItemKeyNotNumeric()
-    {
-        $res = $this->controller->catchAllDelete("users", "no-key");
-        $json = $res[0];
-        $status = $res[1];
-        $this->assertContains("not support", $json["message"]);
-        $this->assertEquals(404, $status);
-    }
-
-
-
-    /**
-     * Delete an item with two many arguments.
-     */
-    public function testDeleteToManyArguments()
-    {
-        $res = $this->controller->catchAllDelete("users", 1, 1);
-        $json = $res[0];
-        $status = $res[1];
-        $this->assertContains("not support", $json["message"]);
-        $this->assertEquals(404, $status);
     }
 }

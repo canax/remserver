@@ -64,7 +64,7 @@ class RemServerControllerUsageTest extends TestCase
     public function testGetDefaultDataset()
     {
         $this->controller->initActionGet();
-        $res = $this->controller->catchAllGet("users");
+        $res = $this->controller->getDataset("users");
         $this->assertInternalType("array", $res);
         $this->assertInternalType("array", $res[0]);
 
@@ -94,7 +94,7 @@ class RemServerControllerUsageTest extends TestCase
                 "limit" => 2,
             ]
         ]);
-        $res = $this->controller->catchAllGet("users");
+        $res = $this->controller->getDataset("users");
         $json = $res[0];
         $this->assertEquals(2, count($json["data"]));
         $this->assertEquals(1, $json["data"][0]["id"]);
@@ -119,7 +119,7 @@ class RemServerControllerUsageTest extends TestCase
                 "limit" => 2,
             ]
         ]);
-        $res = $this->controller->catchAllGet("users");
+        $res = $this->controller->getDataset("users");
         $json = $res[0];
         $this->assertEquals(2, count($json["data"]));
         $this->assertEquals(3, $json["data"][0]["id"]);
@@ -144,7 +144,7 @@ class RemServerControllerUsageTest extends TestCase
                 "limit" => 2,
             ]
         ]);
-        $res = $this->controller->catchAllGet("users");
+        $res = $this->controller->getDataset("users");
         $json = $res[0];
         $this->assertEquals(1, count($json["data"]));
         $this->assertEquals(12, $json["data"][0]["id"]);
@@ -160,7 +160,7 @@ class RemServerControllerUsageTest extends TestCase
      */
     public function testGetNewDataset()
     {
-        $res = $this->controller->catchAllGet("things");
+        $res = $this->controller->getDataset("things");
         $this->assertInternalType("array", $res);
         $this->assertInternalType("array", $res[0]);
 
@@ -179,7 +179,7 @@ class RemServerControllerUsageTest extends TestCase
     public function testGetItemFromDefaultDataset()
     {
         $this->controller->initActionGet();
-        $res = $this->controller->catchAllGet("users", 1);
+        $res = $this->controller->getItem("users", 1);
         $this->assertInternalType("array", $res);
         $this->assertInternalType("array", $res[0]);
 
@@ -197,12 +197,12 @@ class RemServerControllerUsageTest extends TestCase
     public function testPostNewItem()
     {
         $this->di->get("request")->setBody('{"some": "thing"}');
-        $res = $this->controller->catchAllPost("users");
+        $res = $this->controller->postItem("users");
         $json = $res[0];
         $this->assertEquals(13, $json["id"]);
         $this->assertEquals("thing", $json["some"]);
 
-        $res = $this->controller->catchAllGet("users", 13);
+        $res = $this->controller->getItem("users", 13);
         $json = $res[0];
         $this->assertEquals(13, $json["id"]);
         $this->assertEquals("thing", $json["some"]);
@@ -216,12 +216,12 @@ class RemServerControllerUsageTest extends TestCase
     public function testPostNewItemNewDataset()
     {
         $this->di->get("request")->setBody('{"some": "thing"}');
-        $res = $this->controller->catchAllPost("things");
+        $res = $this->controller->postItem("things");
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["some"]);
 
-        $res = $this->controller->catchAllGet("things", 1);
+        $res = $this->controller->getItem("things", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["some"]);
@@ -237,12 +237,12 @@ class RemServerControllerUsageTest extends TestCase
         $this->controller->initActionGet();
 
         $this->di->get("request")->setBody('{"id": 1, "other": "thing"}');
-        $res = $this->controller->catchAllPut("users", 1);
+        $res = $this->controller->putItem("users", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["other"]);
 
-        $res = $this->controller->catchAllGet("users", 1);
+        $res = $this->controller->getItem("users", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["other"]);
@@ -256,12 +256,12 @@ class RemServerControllerUsageTest extends TestCase
     public function testPutItemNewDataset()
     {
         $this->di->get("request")->setBody('{"id": 1, "other": "thing"}');
-        $res = $this->controller->catchAllPut("things", 1);
+        $res = $this->controller->putItem("things", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["other"]);
 
-        $res = $this->controller->catchAllGet("things", 1);
+        $res = $this->controller->getItem("things", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("thing", $json["other"]);
@@ -276,19 +276,19 @@ class RemServerControllerUsageTest extends TestCase
     {
         $this->controller->initActionGet();
 
-        $res = $this->controller->catchAllGet("users", 1);
+        $res = $this->controller->getItem("users", 1);
         $json = $res[0];
         $this->assertEquals(1, $json["id"]);
         $this->assertEquals("Phuong", $json["firstName"]);
         $this->assertEquals("Allison", $json["lastName"]);
 
-        $res = $this->controller->catchAllDelete("users", 1);
+        $res = $this->controller->deleteItem("users", 1);
         $json = $res[0];
         $this->assertContains("Item id '1'", $json["message"]);
         $this->assertContains("was deleted", $json["message"]);
         $this->assertContains("dataset 'users'", $json["message"]);
 
-        $res = $this->controller->catchAllGet("users", 1);
+        $res = $this->controller->getItem("users", 1);
         $json = $res[0];
         $this->assertContains("not found", $json["message"]);
     }
@@ -301,6 +301,15 @@ class RemServerControllerUsageTest extends TestCase
     public function test404()
     {
         $res = $this->controller->catchAll();
+        $this->assertInternalType("array", $res);
+        $this->assertInternalType("array", $res[0]);
+
+        $json = $res[0];
+        $status = $res[1];
+        $this->assertContains("not support", $json["message"]);
+        $this->assertEquals(404, $status);
+
+        $res = $this->controller->catchAll("some", "thing");
         $this->assertInternalType("array", $res);
         $this->assertInternalType("array", $res[0]);
 

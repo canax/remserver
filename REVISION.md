@@ -3,6 +3,14 @@ Revision history
 
 
 
+v2.1.0 (2018-11-23)
+---------------------------------
+
+* Rewrote controller with router specific paths matching controller methods.
+* Updated testbase to reflect changes.
+
+
+
 v2.0.1 (2018-11-23)
 ---------------------------------
 
