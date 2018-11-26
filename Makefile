@@ -63,6 +63,7 @@ container ?= latest
 
 BIN     := .bin
 #PHPUNIT := $(BIN)/phpunit
+PHPMETRICS := vendor/bin/phpmetrics
 PHPUNIT := vendor/bin/phpunit
 PHPLOC 	:= $(BIN)/phploc
 PHPCS   := $(BIN)/phpcs
@@ -344,11 +345,22 @@ phpdoc:
 
 
 
+# target: phpmetrics              - PHP metrics.
+.PHONY: phpmetrics
+phpmetrics: prepare
+	@$(call HELPTEXT,$@)
+	#- [ ! -f .phpmd.xml ] || [ ! -d src ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
+	install -d build/phpmetrics
+	$(PHPMETRICS) --report-html=build/phpmetrics src
+
+
+
 # target: behat                   - Run behat for feature tests.
 .PHONY: behat
 behat:
 	@$(call HELPTEXT,$@)
 	[ ! -d features ] || $(BEHAT)
+
 
 
 # ------------------------------------------------------------------------
