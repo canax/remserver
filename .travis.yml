@@ -16,19 +16,17 @@ matrix:
         - php: nightly
         - php: hhvm
 
-addons:
-    sonarcloud:
-        organization: "canax"
-        # token:
-        #    secure: ********* # encrypted value of your token
+# addons:
+#     sonarcloud:
+#         organization: "canax"
   
 before_script:
     - make install
 
 script:
-    - sonar-scanner
     - make check
     - make test
+    #- sonar-scanner
 
 notifications:
     irc: "irc.freenode.org#dbwebb"
