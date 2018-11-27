@@ -3,6 +3,13 @@ Revision history
 
 
 
+v2.1.2 (2018-11-27)
+---------------------------------
+
+* Upgrade .scrutinizer.yml config file with PHP Scrutinizer.
+
+
+
 v2.1.1 (2018-11-26)
 ---------------------------------
 
