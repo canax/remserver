@@ -3,6 +3,13 @@ Revision history
 
 
 
+v2.1.3 (2019-10-30)
+---------------------------------
+
+* Update Makefile to use new link to download phpmd during make install.
+
+
+
 v2.1.2 (2018-11-27)
 ---------------------------------
 
