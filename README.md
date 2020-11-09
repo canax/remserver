@@ -54,7 +54,7 @@ Copy the needed configuration and setup the remserver as a route handler for the
 rsync -av vendor/anax/remserver/config ./
 ```
 
-The remserver is now active on the route `remserver/` according to the API documentation. You may try it out on the route `remserver/users` to get the default dataset `users`. 
+The remserver is now active on the route `remserver/` according to the API documentation. You may try it out on the route `remserver/users` to get the default dataset `users`.
 
 Optionally you may copy the API documentation.
 
@@ -79,7 +79,7 @@ The postprocessing script should be run after the `composer require` is done.
 
 
 
-Install and setup Anax 
+Install and setup Anax
 ------------------------------------
 
 You need a Anax installation, before you can use this module. You can create a sample Anax installation, using the scaffolding utility [`anax-cli`](https://github.com/canax/anax-cli).
@@ -111,5 +111,5 @@ This software carries a MIT license. See [LICENSE.txt](LICENSE.txt) for details.
 
 ```
  .  
-..:  Copyright (c) 2017 - 2019 Mikael Roos (mos@dbwebb.se)
+..:  Copyright (c) 2017 - 2020 Mikael Roos (mos@dbwebb.se)
 ```
