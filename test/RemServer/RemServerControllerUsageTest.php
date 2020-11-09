@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test for using the RemServerController.
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class RemServerControllerUsageTest extends TestCase
 {

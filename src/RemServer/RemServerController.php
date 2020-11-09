@@ -166,7 +166,7 @@ class RemServerController implements ContainerInjectableInterface
      *
      * @return void
      */
-    public function catchAll(...$args)
+    public function catchAll()
     {
         return [["message" => "404. The api does not support that."], 404];
     }

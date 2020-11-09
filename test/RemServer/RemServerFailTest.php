@@ -21,7 +21,7 @@ class RemServerFailTest extends TestCase
         $session = new Session(["name" => "test"]);
         $dataset = [ANAX_INSTALL_PATH . "/config/remserver/dataset/users-NO.json"];
 
-        $obj = $rem->setDefaultDataset($dataset)
+        $rem->setDefaultDataset($dataset)
             ->injectSession($session)
             ->init();
     }

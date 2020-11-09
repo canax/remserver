@@ -65,9 +65,6 @@ class RemServerSetupTest extends TestCase
      */
     public function testLoadDefaultConfigFile()
     {
-        $rem = new RemServer();
-        $session = new Session(["name" => "test"]);
-
         $config = require ANAX_INSTALL_PATH . "/config/remserver/config.php";
         $dataset = $config["dataset"] ?? null;
         $this->assertArrayHasKey("dataset", $config);
