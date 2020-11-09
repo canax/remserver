@@ -104,7 +104,7 @@ class RemServerController implements ContainerInjectableInterface
     {
         try {
             $entry = $this->di->get("request")->getBodyAsJson();
-        } catch (\Anax\Request\Exception $e) {
+        } catch (\JsonException $e) {
             return [
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
                 500
@@ -129,13 +129,13 @@ class RemServerController implements ContainerInjectableInterface
     {
         try {
             $entry = $this->di->get("request")->getBodyAsJson();
-        } catch (\Anax\Request\Exception $e) {
+        } catch (\JsonException $e) {
             return [
                 ["message" => "500. HTTP request body is not an object/array or valid JSON."],
                 500
             ];
         }
-        
+
         $item = $this->di->get("remserver")->upsertItem($dataset, $itemId, $entry);
         return [$item];
     }

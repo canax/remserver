@@ -7,6 +7,8 @@ v2.1.4 (2020-11-09)
 ---------------------------------
 
 * Update Makefile from commons.
+* Upgrade to PHP 7.4.
+* Update controller to work with latest version of anax/request.
 
 
 
